@@ -16,6 +16,16 @@
         <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
+        <!-- Print stylesheet: clean PDF/print output (hide fixed nav, drop full-height sections, keep entries together) -->
+        <style media="print">
+            #sideNav { display: none !important; }
+            body { padding: 0 !important; }
+            .container-fluid.p-0 { padding: 0 !important; }
+            .resume-section { min-height: 0 !important; padding: 1.75rem 2rem !important; }
+            .resume-section .resume-section-content { max-width: 100% !important; }
+            .resume-section .resume-section-content > .d-flex { page-break-inside: avoid; }
+            h1, h2, h3 { page-break-after: avoid; }
+        </style>
     </head>
     <body id="page-top">
         <!-- Navigation-->
