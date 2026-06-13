@@ -1,1 +1,1 @@
-web: python manage.py migrate && gunicorn resume.wsgi --log-file -
+web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn resume.wsgi --log-file -
