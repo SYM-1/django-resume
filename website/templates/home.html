@@ -19,12 +19,14 @@
         <!-- Print stylesheet: clean PDF/print output (hide fixed nav, drop full-height sections, keep entries together) -->
         <style media="print">
             #sideNav { display: none !important; }
-            body { padding: 0 !important; }
+            html, body { height: auto !important; margin: 0 !important; padding: 0 !important; }
             .container-fluid.p-0 { padding: 0 !important; }
-            .resume-section { min-height: 0 !important; padding: 1.75rem 2rem !important; }
+            .resume-section { min-height: 0 !important; padding: 1.5rem 2rem !important; }
+            .resume-section:last-of-type { padding-bottom: 0 !important; }
             .resume-section .resume-section-content { max-width: 100% !important; }
             .resume-section .resume-section-content > .d-flex { page-break-inside: avoid; }
-            h1, h2, h3 { page-break-after: avoid; }
+            h3 { page-break-after: avoid; }
+            hr { margin: 0 !important; }
         </style>
     </head>
     <body id="page-top">
