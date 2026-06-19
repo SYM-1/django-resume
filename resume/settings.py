@@ -10,9 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-local-dev-only-not-for-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# DEBUG defaults to True for local development; production (Railway) MUST set
+# DJANGO_DEBUG=False as an environment variable.
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() != 'false'
 
-ALLOWED_HOSTS = ['http:localhost', 'localhost', 'https://grmuir.com', 'grmuir.com', 'https://django-resume-production-6d5c.up.railway.app', 'django-resume-production-6d5c.up.railway.app']
+# ALLOWED_HOSTS uses bare hostnames only (no scheme, no slashes).
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'grmuir.com', 'django-resume-production-6d5c.up.railway.app']
 
 
 # Application definition
@@ -25,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'website',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -105,11 +107,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = ['static/']
-
-#Push site online
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+if DEBUG:
+    # Local development: Django's runserver serves static files directly from
+    # STATICFILES_DIRS. No collectstatic, no manifest, no restart after edits.
+    STORAGES = {
+        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
+else:
+    # Production: WhiteNoise serves compressed, content-hashed (cache-busted)
+    # static files from STATIC_ROOT. `collectstatic` runs on deploy (see Procfile).
+    STORAGES = {
+        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+        'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+    }
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
